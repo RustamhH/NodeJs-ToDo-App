@@ -4,20 +4,48 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // GET
-router.get('/todos', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   const todos = await Todo.find({ user: req.user._id });
   res.json(todos);
 });
 
 // POST
 router.post('/create', authenticateToken, async (req, res) => {
+  
+  const {title,description}=req.body;
   const todo = new Todo({
-    ...req.body,
+    title:title,
+    description:description,
     author: req.user._id,
   });
   await todo.save();
   res.status(201).json(todo);
 });
+
+
+// POST
+router.post("/addImages", async (req, res, next) => {
+  try {
+    const form = new formidable.IncomingForm();
+
+    form.parse(req, async (err, fields, files) => {
+      if (files.profileImage[0] && files.profileImage[0].filepath)
+        files.profileImage.map((img) => {
+          const image = fs.readFileSync(img.filepath);
+
+          const imgName = img.originalFilename;
+          const imgPath = `./images/${imgName}`;
+
+          fs.writeFileSync(imgPath, image);
+        });
+      else throw new Error("file does not exist in the temp folder");
+    });
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+
 
 // UPDATE
 router.put('/update/:id', authenticateToken, async (req, res, next) => {
