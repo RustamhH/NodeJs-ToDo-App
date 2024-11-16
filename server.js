@@ -1,9 +1,11 @@
 const express = require("express")
 const { connectToDb } = require("./utilfol/dbutils")
 require('dotenv').config();
-const userRoutes = require('./routefol/userRoutes');
-const todoRoutes = require('./routefol/todoRoutes');
-const authRoutes = require('./routefol/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/authRoutes');
+const basketRoutes = require('./routes/basketRoutes');
+
 const { authenticateToken, authorizeUser } = require('./middleware/authMiddleware');
 
 const app = express()
@@ -11,9 +13,11 @@ app.use(express.json())
 
 connectToDb()
 
-app.use("/todos", todoRoutes)
-app.use("/users", userRoutes)
-app.use("/auth", authRoutes)
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/products", productRoutes);
+app.use("/baskets", basketRoutes);
+
 app.use(authenticateToken)
 app.use(authorizeUser)
 
