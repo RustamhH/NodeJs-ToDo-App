@@ -4,6 +4,28 @@ const {authenticateAccessToken} = require("../middleware/authMiddleware");
 const { isAdmin } = require("../middleware/isAdmin");
 const Product = require("../models/productModel");
 
+
+
+
+router.get("/", async (req, res) => {
+    const pages = parseInt(req.query.page) || 1;
+    const productItemCount = parseInt(req.query.item_count) || 10;
+    const skip = (pages - 1) * productItemCount;
+    const totalItems = await Product.countDocuments();
+    const totalPages = Math.ceil(totalItems / productItemCount);
+  
+    try {
+      const products = await Product.find().skip(skip).limit(productItemCount);
+      res.json({ products, pages, totalPages });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+});
+
+
+
+
+
 router.post("/create", authenticateAccessToken, isAdmin, async (req, res) => {
     try {
         const { title, description, price, currency, category, stock, gallery } = req.body;
