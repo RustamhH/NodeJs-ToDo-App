@@ -23,6 +23,12 @@ router.get("/", async (req, res) => {
 });
 
 
+router.get("/:id", authenticateAccessToken, async (req, res) => {
+  const basket = await Product.findById(req.params.id);
+  if (basket) res.json(basket);
+  else res.send("Invalid product id"); 
+});
+
 
 
 

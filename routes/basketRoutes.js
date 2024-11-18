@@ -14,6 +14,15 @@ router.get("/",authenticateAccessToken, async (req,res)=>{
     }
 });
 
+
+router.get("/:id", authenticateAccessToken, async (req, res) => {
+    const basket = await Basket.findById(req.params.id);
+    if (basket) res.json(basket);
+    else res.send("Invalid basket id"); 
+});
+
+
+
 router.post('/create', authenticateAccessToken, isAdmin, async (req, res) => {
     try {
         const { products , currency, status } = req.body;

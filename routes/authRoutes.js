@@ -9,8 +9,7 @@ const {verifyRefreshToken}=require("../utils/tokenutils")
 router.post("/register", async (req,res)=>{
   try {
     const { firstName, lastName, email, password , isAdmin } = req.body;
-    const passwordHash = await bcrypt.hash(password,10);
-    const user = new User( {firstName,lastName,email,passwordHash,isAdmin} );
+    const user = new User( {firstName,lastName,email,password,isAdmin} );
     await user.save();
     res.status(200).send({ message: "User registered" });
   } 
@@ -23,7 +22,7 @@ router.post("/login", async (req,res)=>{
 
   const { email, password } = req.body;
   const user = await User.findOne( { email } );
-  const password1 = await bcrypt.compare(password,user.passwordHash);
+  const password1 = await bcrypt.compare(password,user.password);
 
   if(user && password1) {
     const accessToken= generateAccessToken(user);
