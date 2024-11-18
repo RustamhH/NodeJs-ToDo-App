@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/userModel');
-const { authenticateToken, authorizeUser } = require('../middleware/authMiddleware');
+const { authenticateAccessToken, authorizeUser } = require('../middleware/authMiddleware');
 
 
 // GET
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 // UPDATE
-router.put('/update/:id', authenticateToken, authorizeUser, async (req, res, next) => {
+router.put('/update/:id',authenticateAccessToken,authorizeUser, async (req, res, next) => {
     
     try {
       req.user = await User.findById(req.params.id);

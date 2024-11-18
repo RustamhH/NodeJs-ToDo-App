@@ -57,3 +57,5 @@ router.delete('/delete/:id', authenticateAccessToken,isAdmin, async (req, res) =
       res.status(400).json({ message: 'Invalid product ID' });
     }
 });
+
+module.exports=router;
