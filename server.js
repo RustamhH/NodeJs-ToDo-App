@@ -19,7 +19,6 @@ app.use("/products", productRoutes);
 app.use("/baskets", basketRoutes);
 
 app.use(authenticateAccessToken)
-app.use(authorizeUser)
 
 const PORT = process.env.PORT
 
