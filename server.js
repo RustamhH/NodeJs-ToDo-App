@@ -5,6 +5,10 @@ const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const basketRoutes = require('./routes/basketRoutes');
+const { rateLimit } = require("express-rate-limit");
+const cluster = require("cluster");
+const os = require("os");
+
 
 const { authenticateAccessToken, authorizeUser } = require('./middleware/authMiddleware');
 
@@ -22,6 +26,20 @@ app.use(authenticateAccessToken)
 
 const PORT = process.env.PORT
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+const limiter = rateLimit({
+    limit: 100,
+    headers: true,
 });
+
+app.use(limiter);
+
+if (cluster.isMaster) {
+  const CPUs = os.cpus().length;
+  for (let i = 0; i < CPUs; i++) {
+    cluster.fork();
+  }
+} else {
+  app.listen(PORT, () => {
+    console.log(`worker process ${process.pid} is listening on port ${PORT}`);
+  });
+}
