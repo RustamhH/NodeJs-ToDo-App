@@ -19,6 +19,12 @@ const basketSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["pending", "cancelled", "confirmed"],
+    default:"pending"
+  },
+  price: {
+    type: Number,
+    min: 0,
+    default: 0
   },
 });
 

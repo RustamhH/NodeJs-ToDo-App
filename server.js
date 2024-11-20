@@ -8,12 +8,15 @@ const basketRoutes = require('./routes/basketRoutes');
 const { rateLimit } = require("express-rate-limit");
 const cluster = require("cluster");
 const os = require("os");
+const cors=require("cors");
 
-
-const { authenticateAccessToken, authorizeUser } = require('./middleware/authMiddleware');
+const { authenticateAccessToken } = require('./middleware/authMiddleware');
 
 const app = express()
 app.use(express.json())
+app.use(
+  cors()
+)
 
 connectToDb()
 
